@@ -87,4 +87,43 @@ public class EmployeeService {
 
     }
 
+    // Update Employee
+    public void updateEmployee() {
+
+        System.out.print("Enter Employee ID to Update: ");
+        int updateId = sc.nextInt();
+        sc.nextLine();
+
+        boolean found = false;
+
+        for (Employee emp : employees) {
+
+            if (emp.id == updateId) {
+
+                System.out.print("Enter New Employee Name: ");
+                emp.name = sc.nextLine();
+
+                System.out.print("Enter New Department: ");
+                emp.department = sc.nextLine();
+
+                System.out.print("Enter New Salary: ");
+                emp.salary = sc.nextDouble();
+
+                System.out.println("\nEmployee Updated Successfully!");
+
+                found = true;
+                break;
+
+            }
+
+        }
+
+        if (!found) {
+
+            System.out.println("Employee Not Found!");
+
+        }
+
+    }
+
 }

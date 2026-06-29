@@ -34,6 +34,10 @@ public class Main {
                     service.searchEmployee();
                     break;
 
+                case 4:
+                    service.updateEmployee();
+                    break;
+
                 case 6:
                     System.out.println("Thank you for using Employee Management System!");
                     System.exit(0);
