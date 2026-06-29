@@ -30,6 +30,10 @@ public class Main {
                     service.viewEmployees();
                     break;
 
+                case 3:
+                    service.searchEmployee();
+                    break;
+
                 case 6:
                     System.out.println("Thank you for using Employee Management System!");
                     System.exit(0);
