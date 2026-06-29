@@ -126,4 +126,35 @@ public class EmployeeService {
 
     }
 
+    // Delete Employee
+    public void deleteEmployee() {
+
+        System.out.print("Enter Employee ID to Delete: ");
+        int deleteId = sc.nextInt();
+
+        boolean found = false;
+
+        for (int i = 0; i < employees.size(); i++) {
+
+            if (employees.get(i).id == deleteId) {
+
+                employees.remove(i);
+
+                System.out.println("\nEmployee Deleted Successfully!");
+
+                found = true;
+                break;
+
+            }
+
+        }
+
+        if (!found) {
+
+            System.out.println("Employee Not Found!");
+
+        }
+
+    }
+
 }

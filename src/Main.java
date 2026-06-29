@@ -38,6 +38,10 @@ public class Main {
                     service.updateEmployee();
                     break;
 
+                case 5:
+                    service.deleteEmployee();
+                    break;
+
                 case 6:
                     System.out.println("Thank you for using Employee Management System!");
                     System.exit(0);
