@@ -1,4 +1,8 @@
+package main;
+
 import java.util.Scanner;
+
+import service.EmployeeService;
 
 public class Main {
 

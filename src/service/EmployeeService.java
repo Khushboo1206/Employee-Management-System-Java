@@ -1,5 +1,9 @@
+package service;
+
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import model.Employee;
 
 public class EmployeeService {
 
@@ -12,6 +16,18 @@ public class EmployeeService {
         System.out.print("Enter Employee ID: ");
         int id = sc.nextInt();
         sc.nextLine();
+
+        // Check for duplicate ID
+        for (Employee emp : employees) {
+
+            if (emp.getId() == id) {
+
+                System.out.println("\nEmployee ID already exists!");
+                return;
+
+            }
+
+        }
 
         System.out.print("Enter Employee Name: ");
         String name = sc.nextLine();
@@ -44,10 +60,10 @@ public class EmployeeService {
 
         for (Employee emp : employees) {
 
-            System.out.println("ID         : " + emp.id);
-            System.out.println("Name       : " + emp.name);
-            System.out.println("Department : " + emp.department);
-            System.out.println("Salary     : " + emp.salary);
+            System.out.println("ID         : " + emp.getId());
+            System.out.println("Name       : " + emp.getName());
+            System.out.println("Department : " + emp.getDepartment());
+            System.out.println("Salary     : " + emp.getSalary());
             System.out.println("-----------------------------------");
 
         }
@@ -64,13 +80,13 @@ public class EmployeeService {
 
         for (Employee emp : employees) {
 
-            if (emp.id == searchId) {
+            if (emp.getId() == searchId) {
 
                 System.out.println("\nEmployee Found!");
-                System.out.println("ID         : " + emp.id);
-                System.out.println("Name       : " + emp.name);
-                System.out.println("Department : " + emp.department);
-                System.out.println("Salary     : " + emp.salary);
+                System.out.println("ID         : " + emp.getId());
+                System.out.println("Name       : " + emp.getName());
+                System.out.println("Department : " + emp.getDepartment());
+                System.out.println("Salary     : " + emp.getSalary());
 
                 found = true;
                 break;
@@ -98,16 +114,16 @@ public class EmployeeService {
 
         for (Employee emp : employees) {
 
-            if (emp.id == updateId) {
+            if (emp.getId() == updateId) {
 
                 System.out.print("Enter New Employee Name: ");
-                emp.name = sc.nextLine();
+                emp.setName(sc.nextLine());
 
                 System.out.print("Enter New Department: ");
-                emp.department = sc.nextLine();
+                emp.setDepartment(sc.nextLine());
 
                 System.out.print("Enter New Salary: ");
-                emp.salary = sc.nextDouble();
+                emp.setSalary(sc.nextDouble());
 
                 System.out.println("\nEmployee Updated Successfully!");
 
@@ -136,7 +152,7 @@ public class EmployeeService {
 
         for (int i = 0; i < employees.size(); i++) {
 
-            if (employees.get(i).id == deleteId) {
+            if (employees.get(i).getId() == deleteId) {
 
                 employees.remove(i);
 
