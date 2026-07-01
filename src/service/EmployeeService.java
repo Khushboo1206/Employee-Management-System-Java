@@ -1,48 +1,65 @@
 package service;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import model.Employee;
 
 public class EmployeeService {
 
-    ArrayList<Employee> employees = new ArrayList<>();
-    Scanner sc = new Scanner(System.in);
+    private ArrayList<Employee> employees = new ArrayList<>();
+    private Scanner sc = new Scanner(System.in);
 
     // Add Employee
     public void addEmployee() {
 
-        System.out.print("Enter Employee ID: ");
-        int id = sc.nextInt();
-        sc.nextLine();
+        try {
 
-        // Check for duplicate ID
-        for (Employee emp : employees) {
+            System.out.print("Enter Employee ID: ");
+            int id = sc.nextInt();
+            sc.nextLine();
 
-            if (emp.getId() == id) {
-
-                System.out.println("\nEmployee ID already exists!");
+            // Validate ID
+            if (id <= 0) {
+                System.out.println("Employee ID must be greater than 0.");
                 return;
-
             }
 
+            // Check duplicate ID
+            for (Employee emp : employees) {
+                if (emp.getId() == id) {
+                    System.out.println("Employee ID already exists!");
+                    return;
+                }
+            }
+
+            System.out.print("Enter Employee Name: ");
+            String name = sc.nextLine();
+
+            System.out.print("Enter Department: ");
+            String department = sc.nextLine();
+
+            System.out.print("Enter Salary: ");
+            double salary = sc.nextDouble();
+
+            // Validate Salary
+            if (salary < 0) {
+                System.out.println("Salary cannot be negative.");
+                return;
+            }
+
+            Employee emp = new Employee(id, name, department, salary);
+            employees.add(emp);
+
+            System.out.println("\nEmployee Added Successfully!");
+
+        } catch (InputMismatchException e) {
+
+            System.out.println("\nInvalid Input! Please enter the correct data type.");
+            sc.nextLine(); // Clear invalid input
+
         }
-
-        System.out.print("Enter Employee Name: ");
-        String name = sc.nextLine();
-
-        System.out.print("Enter Department: ");
-        String department = sc.nextLine();
-
-        System.out.print("Enter Salary: ");
-        double salary = sc.nextDouble();
-
-        Employee emp = new Employee(id, name, department, salary);
-
-        employees.add(emp);
-
-        System.out.println("\nEmployee Added Successfully!");
 
     }
 
@@ -50,10 +67,8 @@ public class EmployeeService {
     public void viewEmployees() {
 
         if (employees.isEmpty()) {
-
             System.out.println("\nNo Employees Found!");
             return;
-
         }
 
         System.out.println("\n========== Employee List ==========");
@@ -73,31 +88,38 @@ public class EmployeeService {
     // Search Employee
     public void searchEmployee() {
 
-        System.out.print("Enter Employee ID to Search: ");
-        int searchId = sc.nextInt();
+        try {
 
-        boolean found = false;
+            System.out.print("Enter Employee ID to Search: ");
+            int searchId = sc.nextInt();
 
-        for (Employee emp : employees) {
+            boolean found = false;
 
-            if (emp.getId() == searchId) {
+            for (Employee emp : employees) {
 
-                System.out.println("\nEmployee Found!");
-                System.out.println("ID         : " + emp.getId());
-                System.out.println("Name       : " + emp.getName());
-                System.out.println("Department : " + emp.getDepartment());
-                System.out.println("Salary     : " + emp.getSalary());
+                if (emp.getId() == searchId) {
 
-                found = true;
-                break;
+                    System.out.println("\nEmployee Found!");
+                    System.out.println("ID         : " + emp.getId());
+                    System.out.println("Name       : " + emp.getName());
+                    System.out.println("Department : " + emp.getDepartment());
+                    System.out.println("Salary     : " + emp.getSalary());
+
+                    found = true;
+                    break;
+
+                }
 
             }
 
-        }
+            if (!found) {
+                System.out.println("Employee Not Found!");
+            }
 
-        if (!found) {
+        } catch (InputMismatchException e) {
 
-            System.out.println("Employee Not Found!");
+            System.out.println("Invalid Employee ID!");
+            sc.nextLine();
 
         }
 
@@ -106,37 +128,51 @@ public class EmployeeService {
     // Update Employee
     public void updateEmployee() {
 
-        System.out.print("Enter Employee ID to Update: ");
-        int updateId = sc.nextInt();
-        sc.nextLine();
+        try {
 
-        boolean found = false;
+            System.out.print("Enter Employee ID to Update: ");
+            int updateId = sc.nextInt();
+            sc.nextLine();
 
-        for (Employee emp : employees) {
+            boolean found = false;
 
-            if (emp.getId() == updateId) {
+            for (Employee emp : employees) {
 
-                System.out.print("Enter New Employee Name: ");
-                emp.setName(sc.nextLine());
+                if (emp.getId() == updateId) {
 
-                System.out.print("Enter New Department: ");
-                emp.setDepartment(sc.nextLine());
+                    System.out.print("Enter New Employee Name: ");
+                    emp.setName(sc.nextLine());
 
-                System.out.print("Enter New Salary: ");
-                emp.setSalary(sc.nextDouble());
+                    System.out.print("Enter New Department: ");
+                    emp.setDepartment(sc.nextLine());
 
-                System.out.println("\nEmployee Updated Successfully!");
+                    System.out.print("Enter New Salary: ");
+                    double salary = sc.nextDouble();
 
-                found = true;
-                break;
+                    if (salary < 0) {
+                        System.out.println("Salary cannot be negative.");
+                        return;
+                    }
+
+                    emp.setSalary(salary);
+
+                    System.out.println("\nEmployee Updated Successfully!");
+
+                    found = true;
+                    break;
+
+                }
 
             }
 
-        }
+            if (!found) {
+                System.out.println("Employee Not Found!");
+            }
 
-        if (!found) {
+        } catch (InputMismatchException e) {
 
-            System.out.println("Employee Not Found!");
+            System.out.println("Invalid Input!");
+            sc.nextLine();
 
         }
 
@@ -145,29 +181,36 @@ public class EmployeeService {
     // Delete Employee
     public void deleteEmployee() {
 
-        System.out.print("Enter Employee ID to Delete: ");
-        int deleteId = sc.nextInt();
+        try {
 
-        boolean found = false;
+            System.out.print("Enter Employee ID to Delete: ");
+            int deleteId = sc.nextInt();
 
-        for (int i = 0; i < employees.size(); i++) {
+            boolean found = false;
 
-            if (employees.get(i).getId() == deleteId) {
+            for (int i = 0; i < employees.size(); i++) {
 
-                employees.remove(i);
+                if (employees.get(i).getId() == deleteId) {
 
-                System.out.println("\nEmployee Deleted Successfully!");
+                    employees.remove(i);
 
-                found = true;
-                break;
+                    System.out.println("\nEmployee Deleted Successfully!");
+
+                    found = true;
+                    break;
+
+                }
 
             }
 
-        }
+            if (!found) {
+                System.out.println("Employee Not Found!");
+            }
 
-        if (!found) {
+        } catch (InputMismatchException e) {
 
-            System.out.println("Employee Not Found!");
+            System.out.println("Invalid Employee ID!");
+            sc.nextLine();
 
         }
 
