@@ -10,14 +10,11 @@ public class DBConnection {
     private static final String PASSWORD = "Khush@9767";
 
     public static Connection getConnection() {
-
         try {
             return DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-
     }
-
 }
