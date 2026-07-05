@@ -1,17 +1,17 @@
 package service;
 
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import dao.EmployeeDAO;
 import model.Employee;
 
 public class EmployeeService {
 
-    private ArrayList<Employee> employees = new ArrayList<>();
-    private Scanner sc = new Scanner(System.in);
+    Scanner sc = new Scanner(System.in);
+    EmployeeDAO dao = new EmployeeDAO();
 
-    // Add Employee
+    // ================= ADD EMPLOYEE =================
     public void addEmployee() {
 
         try {
@@ -20,18 +20,9 @@ public class EmployeeService {
             int id = sc.nextInt();
             sc.nextLine();
 
-            // Validate ID
             if (id <= 0) {
                 System.out.println("Employee ID must be greater than 0.");
                 return;
-            }
-
-            // Check duplicate ID
-            for (Employee emp : employees) {
-                if (emp.getId() == id) {
-                    System.out.println("Employee ID already exists!");
-                    return;
-                }
             }
 
             System.out.print("Enter Employee Name: ");
@@ -43,77 +34,57 @@ public class EmployeeService {
             System.out.print("Enter Salary: ");
             double salary = sc.nextDouble();
 
-            // Validate Salary
             if (salary < 0) {
                 System.out.println("Salary cannot be negative.");
                 return;
             }
 
             Employee emp = new Employee(id, name, department, salary);
-            employees.add(emp);
 
-            System.out.println("\nEmployee Added Successfully!");
+            if (dao.addEmployee(emp)) {
+                System.out.println("\nEmployee Added Successfully!");
+            } else {
+                System.out.println("\nFailed to Add Employee!");
+            }
 
         } catch (InputMismatchException e) {
 
-            System.out.println("\nInvalid Input! Please enter the correct data type.");
-            sc.nextLine(); // Clear invalid input
+            System.out.println("\nInvalid Input!");
+            sc.nextLine();
 
         }
 
     }
 
-    // View Employees
+    // ================= VIEW EMPLOYEES =================
     public void viewEmployees() {
 
-        if (employees.isEmpty()) {
-            System.out.println("\nNo Employees Found!");
-            return;
-        }
-
-        System.out.println("\n========== Employee List ==========");
-
-        for (Employee emp : employees) {
-
-            System.out.println("ID         : " + emp.getId());
-            System.out.println("Name       : " + emp.getName());
-            System.out.println("Department : " + emp.getDepartment());
-            System.out.println("Salary     : " + emp.getSalary());
-            System.out.println("-----------------------------------");
-
-        }
+        dao.viewEmployees();
 
     }
 
-    // Search Employee
+    // ================= SEARCH EMPLOYEE =================
     public void searchEmployee() {
 
         try {
 
             System.out.print("Enter Employee ID to Search: ");
-            int searchId = sc.nextInt();
+            int id = sc.nextInt();
 
-            boolean found = false;
+            Employee emp = dao.searchEmployee(id);
 
-            for (Employee emp : employees) {
+            if (emp != null) {
 
-                if (emp.getId() == searchId) {
+                System.out.println("\nEmployee Found!");
+                System.out.println("ID         : " + emp.getId());
+                System.out.println("Name       : " + emp.getName());
+                System.out.println("Department : " + emp.getDepartment());
+                System.out.println("Salary     : " + emp.getSalary());
 
-                    System.out.println("\nEmployee Found!");
-                    System.out.println("ID         : " + emp.getId());
-                    System.out.println("Name       : " + emp.getName());
-                    System.out.println("Department : " + emp.getDepartment());
-                    System.out.println("Salary     : " + emp.getSalary());
+            } else {
 
-                    found = true;
-                    break;
+                System.out.println("\nEmployee Not Found!");
 
-                }
-
-            }
-
-            if (!found) {
-                System.out.println("Employee Not Found!");
             }
 
         } catch (InputMismatchException e) {
@@ -125,48 +96,50 @@ public class EmployeeService {
 
     }
 
-    // Update Employee
+    // ================= UPDATE EMPLOYEE =================
     public void updateEmployee() {
 
         try {
 
             System.out.print("Enter Employee ID to Update: ");
-            int updateId = sc.nextInt();
+            int id = sc.nextInt();
             sc.nextLine();
 
-            boolean found = false;
+            Employee emp = dao.searchEmployee(id);
 
-            for (Employee emp : employees) {
+            if (emp == null) {
 
-                if (emp.getId() == updateId) {
-
-                    System.out.print("Enter New Employee Name: ");
-                    emp.setName(sc.nextLine());
-
-                    System.out.print("Enter New Department: ");
-                    emp.setDepartment(sc.nextLine());
-
-                    System.out.print("Enter New Salary: ");
-                    double salary = sc.nextDouble();
-
-                    if (salary < 0) {
-                        System.out.println("Salary cannot be negative.");
-                        return;
-                    }
-
-                    emp.setSalary(salary);
-
-                    System.out.println("\nEmployee Updated Successfully!");
-
-                    found = true;
-                    break;
-
-                }
+                System.out.println("Employee Not Found!");
+                return;
 
             }
 
-            if (!found) {
-                System.out.println("Employee Not Found!");
+            System.out.print("Enter New Name: ");
+            emp.setName(sc.nextLine());
+
+            System.out.print("Enter New Department: ");
+            emp.setDepartment(sc.nextLine());
+
+            System.out.print("Enter New Salary: ");
+            double salary = sc.nextDouble();
+
+            if (salary < 0) {
+
+                System.out.println("Salary cannot be negative.");
+                return;
+
+            }
+
+            emp.setSalary(salary);
+
+            if (dao.updateEmployee(emp)) {
+
+                System.out.println("\nEmployee Updated Successfully!");
+
+            } else {
+
+                System.out.println("\nUpdate Failed!");
+
             }
 
         } catch (InputMismatchException e) {
@@ -178,33 +151,22 @@ public class EmployeeService {
 
     }
 
-    // Delete Employee
+    // ================= DELETE EMPLOYEE =================
     public void deleteEmployee() {
 
         try {
 
             System.out.print("Enter Employee ID to Delete: ");
-            int deleteId = sc.nextInt();
+            int id = sc.nextInt();
 
-            boolean found = false;
+            if (dao.deleteEmployee(id)) {
 
-            for (int i = 0; i < employees.size(); i++) {
+                System.out.println("\nEmployee Deleted Successfully!");
 
-                if (employees.get(i).getId() == deleteId) {
+            } else {
 
-                    employees.remove(i);
+                System.out.println("\nEmployee Not Found!");
 
-                    System.out.println("\nEmployee Deleted Successfully!");
-
-                    found = true;
-                    break;
-
-                }
-
-            }
-
-            if (!found) {
-                System.out.println("Employee Not Found!");
             }
 
         } catch (InputMismatchException e) {
